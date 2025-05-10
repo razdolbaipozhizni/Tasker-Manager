@@ -1,0 +1,10 @@
+# Исключаем модули Node.js
+node_modules/
+
+# Артефакты сборки (если есть)
+dist/
+build/
+
+# IDE / OS
+.vscode/
+.DS_Store
