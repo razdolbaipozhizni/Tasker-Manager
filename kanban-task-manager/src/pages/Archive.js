@@ -185,7 +185,7 @@ const Archive = () => {
                     👤 Автор: <strong title={task.createdBy?.email}>{task.createdBy?.name || "Неизвестно"}</strong>
                   </div>
                   <div className="text-muted small mt-1">
-                    🖍️ Статус при архивировании: <strong>{STATUS_LABELS[task.status]}</strong>
+                    🖍️ Статус при архивировании: <strong>{STATUS_LABELS[task.previousStatus]}</strong>
                   </div>
                   <div className="text-muted small">
                     🗄️ Архивировал: <strong>{task.updatedBy?.name || "Неизвестно"}</strong>

@@ -40,7 +40,10 @@ const taskSchema = new mongoose.Schema({
   type: mongoose.Schema.Types.ObjectId,
   ref: 'User'
 }],
-
+  previousStatus: {
+    type: String,
+    enum: ['planned', 'inProgress', 'done'],
+  },
   // флаг мягкого удаления
   isDeleted: {
     type: Boolean,

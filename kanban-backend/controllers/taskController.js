@@ -24,6 +24,7 @@ exports.createTask = async (req, res) => {
       dueDate,
       status,
       urgent,
+      previousStatus: status,
       createdBy: req.user._id,
       updatedBy: req.user._id,
       assignedTo
@@ -118,9 +119,11 @@ exports.archiveTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: 'Задача не найдена' });
 
+    task.previousStatus = task.status;
     task.isArchived = true;
     task.updatedBy = req.user._id;
     await task.save();
+
 
     res.json(task);
   } catch (err) {
@@ -135,6 +138,7 @@ exports.softDeleteTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: 'Задача не найдена' });
 
+    task.previousStatus = task.status;
     task.isDeleted = true;
     task.updatedBy = req.user._id;
     await task.save();
@@ -155,7 +159,8 @@ exports.restoreTask = async (req, res) => {
        // восстанавливаем и из корзины, и из архива
     task.isDeleted  = false;
     task.isArchived = false;
-    task.status     = 'planned';
+    task.status = task.previousStatus || 'planned';
+    task.previousStatus = undefined; // очистка поля
     task.updatedBy = req.user._id;
     await task.save();
 

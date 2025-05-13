@@ -182,7 +182,7 @@ const Deleted = () => {
                     👤 Автор: <strong title={task.createdBy?.email}>{task.createdBy?.name || "Неизвестно"}</strong>
                   </div>
                   <div className="text-muted small mt-1">
-                    🖍️ Статус при удалении: <strong>{STATUS_LABELS[task.status]}</strong>
+                    🖍️ Статус при удалении: <strong>{STATUS_LABELS[task.previousStatus]}</strong>
                   </div>
                   <div className="text-muted small">
                     🗑️ Удалил: <strong>{task.updatedBy?.name || "Неизвестно"}</strong>
