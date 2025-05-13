@@ -5,6 +5,7 @@ import { Container, Form, Button, Alert, Card } from "react-bootstrap";
 
 const Register = () => {
   const navigate = useNavigate();
+
   const [name,     setName]     = useState("");
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
@@ -20,9 +21,10 @@ const Register = () => {
         password,
       });
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("userId", data.user.id);
       axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-      navigate("/"); // или на доску
+      navigate("/projects");
     } catch (err) {
       setError(err.response?.data?.message || "Ошибка регистрации");
     }

@@ -92,7 +92,7 @@ exports.getProjectById = async (req, res) => {
   }
 };
 
-// @desc    Обновить информацию проекта (владелец только)
+// @desc    Обновить информацию проекта (только владелец )
 // @route   PUT /api/projects/:id
 // @access  Private
 exports.updateProject = async (req, res) => {

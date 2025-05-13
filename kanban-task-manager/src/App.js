@@ -11,20 +11,23 @@ import Archive    from "./pages/Archive";
 import Deleted    from "./pages/Deleted";
 import Login      from "./pages/Login";
 import Register   from "./pages/Register";
+import Profile    from "./pages/Profile";
 
 const App = () => {
   // подтягиваем токен один раз
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    else delete axios.defaults.headers.common["Authorization"];
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
   }, []);
 
   const isLoggedIn = !!localStorage.getItem("token");
+  const user = isLoggedIn ? JSON.parse(localStorage.getItem("user")) : null;
 
-  // Получаем текущий projectId из URL, чтобы показывать «Архив» и «Корзину»
   const location = useLocation();
-  // ищем совпадение /board/:id, /archive/:id или /deleted/:id
   const match = location.pathname.match(/^\/(?:board|archive|deleted)\/([^/]+)/);
   const currentProjectId = match?.[1];
 
@@ -35,26 +38,35 @@ const App = () => {
           <Navbar.Brand as={Link} to="/">Tasker</Navbar.Brand>
           <Nav className="me-auto">
             {isLoggedIn && <Nav.Link as={Link} to="/projects">Проекты</Nav.Link>}
-
             {currentProjectId && (
-  <>
-              {(location.pathname.includes("/archive/") || location.pathname.includes("/deleted/")) && (
-                <Nav.Link as={Link} to={`/board/${currentProjectId}`}>Моя доска</Nav.Link>
-              )}
-              <Nav.Link as={Link} to={`/archive/${currentProjectId}`}>Архив</Nav.Link>
-              <Nav.Link as={Link} to={`/deleted/${currentProjectId}`}>Корзина</Nav.Link>
-            </>
-)}
+              <>
+                {(location.pathname.includes("/archive/") || location.pathname.includes("/deleted/")) && (
+                  <Nav.Link as={Link} to={`/board/${currentProjectId}`}>Моя доска</Nav.Link>
+                )}
+                <Nav.Link as={Link} to={`/archive/${currentProjectId}`}>Архив</Nav.Link>
+                <Nav.Link as={Link} to={`/deleted/${currentProjectId}`}>Корзина</Nav.Link>
+              </>
+            )}
           </Nav>
 
           <Nav>
             {isLoggedIn ? (
-              <Nav.Link onClick={() => {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-              }}>
-                Выход
-              </Nav.Link>
+              <>
+                <Nav.Link as={Link} to="/profile">
+                  👤 <strong>{user?.name || "Профиль"}</strong>
+                </Nav.Link>
+                <Nav.Link
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("userId");
+                    delete axios.defaults.headers.common["Authorization"];
+                    window.location.href = "/login";
+                  }}
+                >
+                  Выход
+                </Nav.Link>
+              </>
             ) : (
               <>
                 <Nav.Link as={Link} to="/login">Вход</Nav.Link>
@@ -81,10 +93,10 @@ const App = () => {
             </>
           )}
 
+          <Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/login" replace />} />
           <Route path="/login"    element={isLoggedIn ? <Navigate to="/" replace /> : <Login />} />
           <Route path="/register" element={isLoggedIn ? <Navigate to="/" replace /> : <Register />} />
-
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*"         element={<Navigate to="/" replace />} />
         </Routes>
       </Container>
     </>

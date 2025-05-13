@@ -1,11 +1,12 @@
 // src/pages/Login.jsx
-
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Form, Button, Alert, Card } from "react-bootstrap";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [error,    setError]    = useState("");
@@ -15,12 +16,11 @@ const Login = () => {
     setError("");
     try {
       const { data } = await axios.post("/api/auth/login", { email, password });
-      // Сохраняем токен и задаём заголовок для axios
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user)); // имя + email
       localStorage.setItem("userId", data.user.id);
       axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-      // Перезагружаем страницу, чтобы обновился isLoggedIn в App
-      window.location.href = "/projects";
+      navigate("/projects"); // корректный переход
     } catch (err) {
       setError(err.response?.data?.message || "Ошибка входа");
     }
