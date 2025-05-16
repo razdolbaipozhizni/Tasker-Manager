@@ -82,7 +82,6 @@ const App = () => {
           <Route path="/" element={
             isLoggedIn ? <Navigate to="/projects" replace /> : <Navigate to="/login" replace />
           }/>
-
           {isLoggedIn && (
             <>
               <Route path="/projects"           element={<Projects />} />

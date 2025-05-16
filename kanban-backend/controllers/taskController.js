@@ -64,7 +64,8 @@ exports.getTasksByProject = async (req, res) => {
         return res.status(403).json({ message: 'Доступ запрещён' });
       }
     } else {
-      console.warn('getTasksByProject: req.user не определён, пропускаем проверку прав.');
+      return res.status(401).json({ message: 'Требуется авторизация' });
+      // console.warn('getTasksByProject: req.user не определён, пропускаем проверку прав.');
     }
 
     const tasks = await Task.find({ project: projectId, isDeleted: false, isArchived: false })

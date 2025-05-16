@@ -16,7 +16,7 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 
 // GET    /api/tasks/projects/:projectId/tasks (можно оставить публичным или защитить при необходимости)
-router.get('/projects/:projectId/tasks', getTasksByProject);
+router.get('/projects/:projectId/tasks', protect, getTasksByProject);
 
 // Применяем защиту ко всем оставшимся маршрутам
 router.use(protect);
